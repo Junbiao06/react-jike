@@ -122,6 +122,7 @@ const Publish = () => {
                 action={'http://geek.itheima.net/v1_0/upload'}
                 name="image"
                 onChange={onUploadChange}
+                maxCount={imageType}
               >
                 <div style={{ marginTop: 8 }}>
                   <PlusOutlined />
@@ -148,7 +149,7 @@ const Publish = () => {
           </Form.Item>
         </Form>
       </Card>
-    </div>
+    </div >
   )
 }
 
