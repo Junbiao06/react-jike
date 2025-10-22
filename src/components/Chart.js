@@ -197,6 +197,7 @@ const Chart = ({ title }) => {
 
     // 4. 使用参数，完成渲染
     option && myChart.setOption(option);
+
   }, [])
 
   {/* <div id="main" style={{ width: "500px", height: "400px" }}> */ }
