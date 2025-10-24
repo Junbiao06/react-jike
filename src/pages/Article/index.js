@@ -90,14 +90,41 @@ const Article = () => {
 
   const [list, setList] = useState([]);
   const [count, setCount] = useState(0);
+  // 筛选功能
+  // 1. 准备参数
+  // 2. 获取筛选数据
+  // 3. 表单数据放到参数中
+  // 4. 重新拉取列表，渲染逻辑
+  const [reqData, setReqDate] = useState({
+    status: '',
+    channel_id: '',
+    begin_pubdate: '',
+    end_pubdate: '',
+    page: 1,
+    per_page: 4
+  })
   useEffect(() => {
     async function getList() {
-      const res = await getArticleListAPI()
+      const res = await getArticleListAPI(reqData)
       setList(res.data.results);
       setCount(res.data.total_count);
     }
     getList()
-  }, [])
+  }, [reqData])
+
+
+
+  const onFinish = (formValue) => {
+    console.log(formValue);
+    setReqDate({
+      ...reqData,
+      channel_id: formValue.channel_id,
+      status: formValue.status,
+      begin_pubdate: formValue.date[0].format('YYYY-MM-DD'),
+      end_pubdate: formValue.date[1].format('YYYY-MM-DD')
+    })
+  }
+
 
   return (
     <div>
@@ -110,7 +137,7 @@ const Article = () => {
         }
         style={{ marginBottom: 20 }}
       >
-        <Form initialValues={{ status: '' }}>
+        <Form initialValues={{ status: '' }} onFinish={onFinish}>
           <Form.Item label="状态" name="status">
             <Radio.Group>
               <Radio value={''}>全部</Radio>
