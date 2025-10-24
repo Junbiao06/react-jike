@@ -15,9 +15,10 @@ import { Link } from 'react-router-dom'
 import ReactQuill from 'react-quill-new'
 import "react-quill-new/dist/quill.snow.css"
 import './index.scss'
-import { useEffect, useState } from 'react'
-import { fetchChannelsList, fetchCreateArticle } from '@/store/modules/article'
-import { useDispatch, useSelector } from 'react-redux'
+import { useState } from 'react'
+import { fetchCreateArticle } from '@/store/modules/article'
+import { useDispatch, } from 'react-redux'
+import { useChannels } from '@/hooks/useChannels'
 
 
 const { Option } = Select
@@ -34,12 +35,15 @@ const Publish = () => {
   //   // 2. 调用
   //   getChannelsList()
   // }, [])
-  const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(fetchChannelsList())
-  }, [])
 
-  const channelsList = useSelector(state => state.article.channelsList)
+  const dispatch = useDispatch()
+  // useEffect(() => {
+  //   dispatch(fetchChannelsList())
+  // }, [])
+
+  // const channelsList = useSelector(state => state.article.channelsList)
+
+  const { channelsList } = useChannels()
 
   const onFinish = (formValue) => {
     // console.log(formValue);
@@ -58,6 +62,7 @@ const Publish = () => {
     }
     // 2. 调用接口提交
     dispatch(fetchCreateArticle(reqData))
+    message.success('发布文章成功')
   }
 
   const [imageList, setImageList] = useState([])
