@@ -73,20 +73,21 @@ const Article = () => {
     }
   ]
   // 准备表格body数据
-  const data = [
-    {
-      id: '8218',
-      comment_count: 0,
-      cover: {
-        images: [],
-      },
-      like_count: 0,
-      pubdate: '2019-03-11 09:00:00',
-      read_count: 2,
-      status: 2,
-      title: 'wkwebview离线化加载h5资源解决方案'
-    }
-  ]
+  // const data = [
+  //   {
+  //     id: '8218',
+  //     comment_count: 0,
+  //     cover: {
+  //       images: [],
+  //     },
+  //     like_count: 0,
+  //     pubdate: '2019-03-11 09:00:00',
+  //     read_count: 2,
+  //     status: 2,
+  //     title: 'wkwebview离线化加载h5资源解决方案'
+  //   }
+  // ]
+
 
   const [list, setList] = useState([]);
   const [count, setCount] = useState(0);
@@ -111,6 +112,13 @@ const Article = () => {
     }
     getList()
   }, [reqData])
+  const onPageChange = (page) => {
+    // console.log(page);
+    setReqDate({
+      ...reqData,
+      page
+    })
+  }
 
 
 
@@ -149,7 +157,6 @@ const Article = () => {
           <Form.Item label="频道" name="channel_id">
             <Select
               placeholder="请选择文章频道"
-              defaultValues="请选择文章频道"
               style={{ width: 120 }}
             >
               {channelsList.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
@@ -170,7 +177,16 @@ const Article = () => {
       </Card>
 
       <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={list} />
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={list}
+          pagination={{
+            total: count,
+            pageSize: reqData.per_page,
+            onChange: onPageChange
+          }}
+        />
 
       </Card>
     </div>
