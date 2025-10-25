@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select } from 'antd'
+import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Popconfirm } from 'antd'
 // 引入时间选择器汉化包
 import locale from 'antd/es/date-picker/locale/zh_CN'
 
@@ -8,7 +8,7 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import img404 from '@/assets/error.png'
 import { useChannels } from '@/hooks/useChannels'
 import { useEffect, useState } from 'react'
-import { getArticleListAPI } from '@/apis/article'
+import { deleteArticleAPI, getArticleListAPI } from '@/apis/article'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -61,12 +61,20 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button
-              type="primary"
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-            />
+            <Popconfirm
+              title="Delete the task"
+              description="确认删除当前文章？"
+              onConfirm={() => onConfirm(data)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
           </Space>
         )
       }
@@ -133,6 +141,13 @@ const Article = () => {
     })
   }
 
+  const onConfirm = async (data) => {
+    // console.log(data);
+    await deleteArticleAPI(data.id);
+    setReqDate({
+      ...reqData
+    })
+  }
 
   return (
     <div>
