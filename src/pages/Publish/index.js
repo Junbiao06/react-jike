@@ -11,14 +11,17 @@ import {
   message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import ReactQuill from 'react-quill-new'
 import "react-quill-new/dist/quill.snow.css"
 import './index.scss'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchCreateArticle } from '@/store/modules/article'
 import { useDispatch, } from 'react-redux'
 import { useChannels } from '@/hooks/useChannels'
+import { getAllByTestId } from '@testing-library/dom'
+import { getArticleById } from '@/apis/article'
+import { type } from '@testing-library/user-event/dist/type'
 
 
 const { Option } = Select
@@ -79,6 +82,26 @@ const Publish = () => {
 
   }
 
+  // 回填数据
+  const [searchParams] = useSearchParams()
+  const articleId = searchParams.get('id')
+  // 获取实例 回显数据
+  const [form] = Form.useForm()
+  useEffect(() => {
+    if (!articleId) return
+    async function getArticleDetail() {
+      const res = await getArticleById(articleId)
+      const data = res.data
+      const { cover } = data
+      form.setFieldsValue({
+        ...data,
+        type: cover.type
+      })
+      setImageType(cover.type)
+      setImageList(cover.images.map(url => ({ url })))
+    }
+    getArticleDetail()
+  }, [articleId, form])
 
   return (
     <div className="publish">
@@ -96,6 +119,7 @@ const Publish = () => {
           wrapperCol={{ span: 16 }}
           initialValues={{ type: 0 }}
           onFinish={onFinish}
+          form={form}
         >
           <Form.Item
             label="标题"
@@ -131,6 +155,7 @@ const Publish = () => {
                 name="image"
                 onChange={onUploadChange}
                 maxCount={imageType}
+                fileList={imageList}
               >
                 <div style={{ marginTop: 8 }}>
                   <PlusOutlined />

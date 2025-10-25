@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Popconfirm } from 'antd'
 // 引入时间选择器汉化包
 import locale from 'antd/es/date-picker/locale/zh_CN'
@@ -18,6 +18,7 @@ const Article = () => {
     1: <Tag color="warning">待审核</Tag>,
     2: <Tag color="green">审核通过</Tag>
   }
+  const navigate = useNavigate()
   const { channelsList } = useChannels()
   // 准备列数据
   const columns = [
@@ -60,7 +61,7 @@ const Article = () => {
       render: data => {
         return (
           <Space size="middle">
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={() => navigate(`/publish?id=${data.id}`)} />
             <Popconfirm
               title="Delete the task"
               description="确认删除当前文章？"
