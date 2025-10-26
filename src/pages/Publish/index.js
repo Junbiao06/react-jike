@@ -16,7 +16,7 @@ import ReactQuill from 'react-quill-new'
 import "react-quill-new/dist/quill.snow.css"
 import './index.scss'
 import { useEffect, useState } from 'react'
-import { fetchCreateArticle } from '@/store/modules/article'
+import { fetchCreateArticle, fetchUpdateArticle } from '@/store/modules/article'
 import { useDispatch, } from 'react-redux'
 import { useChannels } from '@/hooks/useChannels'
 import { getAllByTestId } from '@testing-library/dom'
@@ -59,12 +59,13 @@ const Publish = () => {
       content,
       cover: {
         type: imageType,
-        images: imageList.map(item => item.response.data.url)
+        // 只适用于新增时的逻辑
+        images: imageList.map(item => item.response ? item.response.data.url : item.url)
       },
       channel_id
     }
     // 2. 调用接口提交
-    dispatch(fetchCreateArticle(reqData))
+    articleId ? dispatch(fetchUpdateArticle({ ...reqData, id: articleId })) : dispatch(fetchCreateArticle(reqData))
     message.success('发布文章成功')
   }
 
@@ -109,7 +110,7 @@ const Publish = () => {
         title={
           <Breadcrumb items={[
             { title: <Link to={'/'}>首页</Link> },
-            { title: '发布文章' },
+            { title: `${articleId ? '编辑文章' : '发布文章'}` },
           ]}
           />
         }
@@ -176,7 +177,7 @@ const Publish = () => {
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
               <Button size="large" type="primary" htmlType="submit">
-                发布文章
+                {articleId ? '确认编辑' : '发布文章'}
               </Button>
             </Space>
           </Form.Item>

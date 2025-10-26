@@ -1,5 +1,4 @@
-import { getChannelsAPI, createArticleAPI } from "@/apis/article";
-import Article from "@/pages/Article";
+import { getChannelsAPI, createArticleAPI, updateArticleAPI } from "@/apis/article";
 
 const { createSlice } = require("@reduxjs/toolkit");
 
@@ -17,11 +16,14 @@ const articleStore = createSlice({
     },
     setCreateArticle(state, action) {
       state.article = action.payload
+    },
+    setUpdateArticle(state, action) {
+      state.article = action.payload
     }
   }
 })
 
-const { setChannelsList, setCreateArticle } = articleStore.actions
+const { setChannelsList, setCreateArticle, setUpdateArticle } = articleStore.actions
 
 const articleReducer = articleStore.reducer
 
@@ -39,7 +41,13 @@ const fetchCreateArticle = (data) => {
     // console.log(res);
   }
 }
+const fetchUpdateArticle = (data) => {
+  return async (dispatch) => {
+    const res = await updateArticleAPI(data);
+    dispatch(setUpdateArticle(res.data))
+  }
+}
 
 
-export { fetchChannelsList, fetchCreateArticle }
+export { fetchChannelsList, fetchCreateArticle, fetchUpdateArticle }
 export default articleReducer
